@@ -2,158 +2,110 @@ package com.launchcode.frozen_pixel_alchemy.controllers;
 
 import com.launchcode.frozen_pixel_alchemy.respositories.PhotographerRepository;
 import com.launchcode.frozen_pixel_alchemy.models.Photographer;
+import javafx.print.Collation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-@Controller
-@RequestMapping("/photographers")
+@RestController
+@RequestMapping("/api/photographers")
 public class PhotographerController {
 
     @Autowired
-    private PhotographerRepository photographerRepository;
+    PhotographerRepository photographerRepository;
 
-    private String generateNextUserId() {
-        List<Photographer> all = photographerRepository.findAll();
-        int max = 0;
-        for (Photographer p : all) {
-            String uid = p.getUserId();
-            if (uid != null && uid.startsWith("PGID-")) {
-                try {
-                    int num = Integer.parseInt(uid.substring(5));
-                    if (num > max) max = num;
-                } catch (NumberFormatException ignored) {}
-            }
-        }
-        return String.format("PGID-%04d", max + 1);
-    }
-
+    // Endpoint to get all photographers
+    // URL: http://localhost:8080/api/photographers
+    // Method: GET
+    // Returns: List of all photographers in JSON format
     @GetMapping("")
-    @ResponseBody
-    public String renderPhotographerHomePage() {
+    public ResponseEntity<?> getAllPhotographers() {
         List<Photographer> allPhotographers = photographerRepository.findAll();
-        StringBuilder photographerList = new StringBuilder();
-        if (allPhotographers.isEmpty()) {
-            return """
-                <html>
-                <body>
-                <h2>PHOTOGRAPHERS</h2>
-                <p>No photographers found. Please add a photographer.</p>
-                <form action='/photographers/add' method='post'>
-                    <input type='text' name='firstName' placeholder='First Name' required>
-                    <input type='text' name='lastName' placeholder='Last Name' required>
-                    <button type='submit'>Add Photographer</button>
-                </form>
-                </body>
-                </html>
-                """;
-        }
-        for (Photographer photographer : allPhotographers) {
-            photographerList.append("<li><a href='/photographers/details/")
-                    .append(photographer.getId())
-                    .append("'>")
-                    .append(photographer.getFirstName())
-                    .append(" ")
-                    .append(photographer.getLastName())
-                    .append("</a></li>");
-        }
-        return """
-            <html>
-            <body>
-            <h2>PHOTOGRAPHERS</h2><ul>
-            """ + photographerList + """
-            </ul>
-            <form action='/photographers/add' method='post'>
-                <input type='text' name='firstName' placeholder='First Name' required>
-                <input type='text' name='lastName' placeholder='Last Name' required>
-                <button type='submit'>Add Photographer</button>
-            </form>
-            </body></html>
-            """;
+        return new ResponseEntity<>(allPhotographers, HttpStatus.OK);
     }
 
-    @GetMapping("/details/{photographerId}")
-    @ResponseBody
-    public String showPhotographerDetails(@PathVariable int photographerId) {
-        return photographerRepository.findById(photographerId)
-                .map(photographer -> """
-                    <html>
-                    <body>
-                    <h3>Photographer Details</h3>
-                    <p><b>ID:</b> """ + photographer.getId() + "</p>" +
-                        "<p><b>Name:</b> " + photographer.getFirstName() + " " + photographer.getLastName() + "</p>" +
-                        "<p><b>User ID:</b> " + photographer.getUserId() + "</p>" +
-                        "</body></html>")
-                .orElse("<html><body><h3>Photographer Not Found</h3></body></html>");
+    // Endpoint to get photographer details by ID
+    // URL: http://localhost:8080/api/photographers/details/{photographerId}
+    // Method: GET
+    // Returns: HTML page with photographer details
+    // Example: http://localhost:8080/api/photographers/details/1
+    @GetMapping(value = "/details/{photographerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getPhotographerById(@PathVariable(value = "photographerId") int photographerId) {
+        Photographer currentPhotographer = photographerRepository.findById(photographerId)
+                .orElse(null);
+        if (currentPhotographer != null) {
+            return new ResponseEntity<>(currentPhotographer, HttpStatus.OK);
+        } else {
+            String response = "Photographer with ID " + photographerId + " not found.";
+            // Return a JSON response with the error message
+            return new ResponseEntity<>(Collections.singletonMap("response", response), HttpStatus.NOT_FOUND);
+        }
     }
 
+    // Endpoint to add a new photographer
+    // URL: http://localhost:8080/api/photographers/add
+    // Method: POST
+    // Parameters: firstName, lastName, bio (optional), profilePictureUrl (optional)
+    // Returns: HTML page with confirmation of photographer addition
+    // Example: http://localhost:8080/api/photographers/add?firstName=John&lastName=Doe&bio=Photographer+Bio&profilePictureUrl=http://example
     @PostMapping("/add")
-    @ResponseBody
-    public String addPhotographer(@RequestParam String firstName,
-                                  @RequestParam String lastName,
-                                  @RequestParam(required = false) String bio,
-                                  @RequestParam(required = false) String profilePictureUrl) {
-        Photographer photographer = new Photographer();
-        photographer.setFirstName(firstName);
-        photographer.setLastName(lastName);
-        photographer.setUserId(generateNextUserId());
-        photographer.setBio(bio);
-        photographer.setProfilePictureUrl(profilePictureUrl);
-        photographerRepository.save(photographer);
-        return """
-        <html>
-        <body>
-        <h3>Photographer Added</h3>
-        <p><b>ID:</b> """ + photographer.getId() + "</p>" +
-                "<p><b>Name:</b> " + firstName + " " + lastName + "</p>" +
-                "<p><b>User ID:</b> " + photographer.getUserId() + "</p>" +
-                "<p><b>Bio:</b> " + (bio != null ? bio : "N/A") + "</p>" +
-                "</body></html>";
+    public ResponseEntity<?> createNewPhotographer(@RequestParam(value = "firstName") String firstName,
+                                                   @RequestParam(value = "lastName") String lastName,
+                                                   @RequestParam(value = "userId", required = false) String userId,
+                                                   @RequestParam(value = "bio", required = false) String bio,
+                                                   @RequestParam(value = "profilePictureUrl", required = false) String profilePictureUrl) {
+        Photographer newPhotographer = new Photographer(firstName, lastName, null);
+        newPhotographer.setBio("Default Bio"); // Set a default bio if not provided
+        newPhotographer.setProfilePictureUrl("http://default-profile-picture.com/default.jpg"); // Set a default profile picture URL if not provided
+        newPhotographer.setUserId(userId); // Set a user ID
+        // Save the new photographer to the repository
+        photographerRepository.save(newPhotographer);
+        return new ResponseEntity<>(newPhotographer, HttpStatus.CREATED);
     }
 
+    // Endpoint to update an existing photographer
+    // URL: http://localhost:8080/api/photographers/update/{photographerId}
+    // Method: PUT
+    // Parameters: firstName, lastName, bio (optional), profilePictureUrl (optional)
+    // Returns: HTML page with confirmation of photographer update
+    // Example: http://localhost:8080/api/photographers/update/1?firstName=Jane&lastName=Doe&bio=Updated+Bio&profilePictureUrl
     @PutMapping("/update/{photographerId}")
-    @ResponseBody
-    public String updatePhotographer(@PathVariable int photographerId,
-                                     @RequestParam String firstName,
-                                     @RequestParam String lastName,
-                                     @RequestParam(required = false) String bio,
-                                     @RequestParam(required = false) String profilePictureUrl) {
-        return photographerRepository.findById(photographerId)
-                .map(photographer -> {
-                    photographer.setFirstName(firstName);
-                    photographer.setLastName(lastName);
-                    photographer.setBio(bio);
-                    photographer.setProfilePictureUrl(profilePictureUrl);
-                    photographerRepository.save(photographer);
-                    return """
-                        <html>
-                        <body>
-                        <h3>Photographer Updated</h3>
-                        <p><b>ID:</b> """ + photographerId + "</p>" +
-                            "<p><b>Updated Name:</b> " + firstName + " " + lastName + "</p>" +
-                            "<p><b>User ID:</b> " + photographer.getUserId() + "</p>" +
-                            "</body></html>";
-                })
-                .orElse("<html><body><h3>Photographer Not Found</h3></body></html>");
+    public ResponseEntity<?> updatePhotographer(@PathVariable int photographerId,
+                                                @RequestParam(value = "firstName") String firstName,
+                                                @RequestParam(value = "lastName") String lastName) {
+        Photographer photographer = photographerRepository.findById(photographerId)
+                .orElse(null);
+        if (photographer != null) {
+            photographer.setFirstName(firstName);
+            photographer.setLastName(lastName);
+            photographerRepository.save(photographer);
+            return new ResponseEntity<>(photographer, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Photographer not found", HttpStatus.NOT_FOUND);
+        }
     }
 
-    @DeleteMapping("/delete/{photographerId}")
-    @ResponseBody
-    public String deletePhotographer(@PathVariable int photographerId) {
-        return photographerRepository.findById(photographerId)
-                .map(photographer -> {
-                    photographerRepository.delete(photographer);
-                    return """
-                        <html>
-                        <body>
-                        <h3>Photographer Deleted</h3>
-                        <p><b>ID:</b> """ + photographerId + "</p>" +
-                            "<p><b>Name:</b> " + photographer.getFirstName() + " " + photographer.getLastName() + "</p>" +
-                            "<p><b>User ID:</b> " + photographer.getUserId() + "</p>" +
-                            "</body></html>";
-                })
-                .orElse("<html><body><h3>Photographer Not Found</h3></body></html>");
+    // Endpoint to Delete a photographer
+    // URL: http://localhost:8080/api/photographers/delete/{photographerId}
+    // Method: DELETE
+    // Returns: HTML page with confirmation of photographer deletion
+    @DeleteMapping(value = "/delete/{photographerId}", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deletePhotographer(@PathVariable int photographerId) {
+        Photographer currentPhotographer = photographerRepository.findById(photographerId)
+                .orElse(null);
+        if (currentPhotographer != null) {
+            photographerRepository.delete(currentPhotographer);
+            return new ResponseEntity<>("Photographer deleted successfully", HttpStatus.OK);
+        } else {
+            String response = "Photographer with ID " + photographerId + " not found.";
+            // Return a JSON response with the error message
+            return new ResponseEntity<>(Collections.singletonMap("response", response), HttpStatus.NOT_FOUND);
+        }
     }
 }
