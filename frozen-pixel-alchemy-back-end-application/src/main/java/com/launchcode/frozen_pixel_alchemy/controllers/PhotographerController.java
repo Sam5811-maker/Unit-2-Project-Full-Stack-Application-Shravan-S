@@ -2,14 +2,11 @@ package com.launchcode.frozen_pixel_alchemy.controllers;
 
 import com.launchcode.frozen_pixel_alchemy.respositories.PhotographerRepository;
 import com.launchcode.frozen_pixel_alchemy.models.Photographer;
-import javafx.print.Collation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
