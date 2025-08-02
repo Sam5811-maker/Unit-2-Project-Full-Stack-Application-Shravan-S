@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/photographers")
 public class PhotographerController {
-
+    // Injecting the PhotographerRepository to interact with the database
     @Autowired
     PhotographerRepository photographerRepository;
 
