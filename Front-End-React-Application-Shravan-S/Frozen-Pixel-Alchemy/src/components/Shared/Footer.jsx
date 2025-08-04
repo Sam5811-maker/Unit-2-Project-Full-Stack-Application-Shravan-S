@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faSnapchat, faTwitter, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { NavLink } from 'react-router-dom';
-import './FooterStylingSheet.css';
+import '../../stylesheets/FooterStylingSheet.css';
 
 const Footer = () => {
     return (

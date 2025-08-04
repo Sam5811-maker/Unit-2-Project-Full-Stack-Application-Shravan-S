@@ -13,10 +13,13 @@ import Contact from './components/Pages/Contact';
 
 // CSS imports
 import './App.css';
-import './components/Shared/FooterStylingSheet.css';
-import './components/Pages/HomeStyleSheet.css';
-import './components/Pages/PhotographerStyleSheet.css';
-import './components/Pages/BookingStylingSheet.css';
+import './stylesheets/FooterStylingSheet.css';
+import './stylesheets/HomeStyleSheet.css';
+import './stylesheets/PhotographerStyleSheet.css';
+import './stylesheets/BookingStylingSheet.css';
+import './stylesheets/AboutStylingSheet.css';
+import './stylesheets/ContactStylingSheet.css';
+import './stylesheets/PrintStylingSheet.css';
 
 const App = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);

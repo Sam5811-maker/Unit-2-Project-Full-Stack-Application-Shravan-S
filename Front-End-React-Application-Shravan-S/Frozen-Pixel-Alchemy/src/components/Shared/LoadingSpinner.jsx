@@ -1,5 +1,5 @@
 import React from 'react';
-import './LoadingSpinner.css';
+import '../../stylesheets/LoadingSpinner.css';
 
 const LoadingSpinner = ({ message = "Loading images..." }) => {
   return (
