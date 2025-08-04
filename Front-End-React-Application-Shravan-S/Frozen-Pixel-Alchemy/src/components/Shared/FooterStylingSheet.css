@@ -1,0 +1,70 @@
+/* Footer Container */
+.footer-basic {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 40px 20px;
+    background-color: #ffffff;
+    color: #4b4c4d;
+    text-align: center;
+}
+
+/* Footer Navigation */
+.footer-basic .list-inline {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-basic .list-inline li {
+  display: inline-block;
+}
+
+.footer-basic .list-inline a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.footer-basic .list-inline a:hover {
+  color: #0077b6; /* Soft blue highlight */
+  opacity: 1;
+}
+
+/* Social Icons */
+.footer-basic .social {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-basic .social a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  font-size: 28px;
+  border-radius: 50%;
+  background-color: #4b4c4d;
+  color: white;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.footer-basic .social a:hover {
+  background-color: #0077b6;
+  transform: scale(1.1);
+}
+
+/* Copyright */
+.footer-basic .copyright {
+    text-align: center;
+  font-size: 14px;
+  color: #777;
+  margin-top: 15px;
+}

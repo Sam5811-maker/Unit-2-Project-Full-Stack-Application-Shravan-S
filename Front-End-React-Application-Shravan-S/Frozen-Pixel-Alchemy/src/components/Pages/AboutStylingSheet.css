@@ -1,0 +1,14 @@
+.about-imgs {
+    width: 300px; 
+    height: auto;
+    border-radius: 10px; 
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3); /* Adds depth effect */
+    display: block;
+    margin: 20px auto; /* to Centers the image */
+    transition: transform 0.3s ease-in-out; /* transition effect */
+}
+
+/* Hover effect */
+.about-imgs:hover {
+    transform: scale(1.25); /* zoom on hover */
+}
