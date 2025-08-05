@@ -1,5 +1,6 @@
+
 import React from 'react';
-import '../../stylesheets/LoadingSpinner.css'; 
+import '../../stylesheets/LoadingSpinner.css';
 
 // LoadingSpinner component to display a spinner and message while images are loading
 const LoadingSpinner = ({ message = "Loading images..." }) => {

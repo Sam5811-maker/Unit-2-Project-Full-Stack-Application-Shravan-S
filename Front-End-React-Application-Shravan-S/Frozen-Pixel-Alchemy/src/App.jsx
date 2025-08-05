@@ -17,6 +17,9 @@ import './stylesheets/FooterStylingSheet.css';
 import './stylesheets/HomeStyleSheet.css';
 import './stylesheets/PhotographerStyleSheet.css';
 import './stylesheets/BookingStylingSheet.css';
+import './stylesheets/AboutStylingSheet.css';
+import './stylesheets/ContactStylingSheet.css';
+import './stylesheets/PrintStylingSheet.css';
 
 const App = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
