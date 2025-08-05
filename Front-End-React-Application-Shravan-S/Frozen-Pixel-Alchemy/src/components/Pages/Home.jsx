@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Shared/Button";
 import LoadingSpinner from "../Shared/LoadingSpinner";
 import usePexelsImages from "../../hooks/usePexelsImages";
-import "../Pages/HomeStyleSheet.css";
+import "../../stylesheets/HomeStyleSheet.css";
 
 const Home = () => {
   const navigate = useNavigate();

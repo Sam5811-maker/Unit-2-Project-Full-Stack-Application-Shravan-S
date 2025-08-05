@@ -1,5 +1,5 @@
 // import React from 'react';
-import '../Pages/PrintStylingSheet.css';
+import '../../stylesheets/PrintStylingSheet.css';
 
 const images = import.meta.glob('/src/assets/Images/Prints/*.{png,jpg,jpeg,svg}', {
   eager: true,

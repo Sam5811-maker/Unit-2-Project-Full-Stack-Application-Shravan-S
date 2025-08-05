@@ -32,6 +32,19 @@ const Booking = () => {
         // Filter available services based on selected photographer
     const filteredServices = photographerList.find(pg => pg.name === photographer)?.services || [];
 
+    // Convert 12-hour time format to 24-hour format for backend
+    const convertTo24Hour = (time12h) => {
+        const [time, modifier] = time12h.split(' ');
+        let [hours, minutes] = time.split(':');
+        if (hours === '12') {
+            hours = '00';
+        }
+        if (modifier === 'PM') {
+            hours = parseInt(hours, 10) + 12;
+        }
+        return `${hours.toString().padStart(2, '0')}:${minutes}`;
+    };
+
     const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -41,27 +54,37 @@ const Booking = () => {
         }
 
     const newBooking = {
-      appointment,
-      photographer,
-      typeOfService,
-      email,
-      selectedDate,
-      slotTime
+      eventType: typeOfService,
+      bookingDate: selectedDate,
+      bookingTime: convertTo24Hour(slotTime),
+      notes: `${appointment} - Photographer: ${photographer} - Email: ${email}`,
+      status: "pending"
     };
 
-    fetch("http://localhost:8080/api/bookings", {
+    fetch("http://localhost:8080/api/bookings/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newBooking)
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        return res.text().then(text => {
+          throw new Error(`HTTP ${res.status}: ${text}`);
+        });
+      }
+      return res.json();
+    })
     .then(() => {
-      setSuccessMessage("Booking submitted!");
+      setSuccessMessage("Booking submitted successfully!");
+      setError(""); // Clear any previous errors
       setAppointment(""); setPhotographer(""); setTypeOfService("");
       setEmail(""); setSelectedDate(""); setSlotTime("");
-      setError("");
     })
-    .catch(() => setError("Failed to submit booking."));
+    .catch((error) => {
+      console.error("Booking submission error:", error);
+      setError(`Failed to submit booking: ${error.message}`);
+      setSuccessMessage(""); // Clear any previous success message
+    });
     };
 
     const handleCancelBooking = (id) => {
@@ -124,6 +147,7 @@ const Booking = () => {
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
 
                 {error && <p className="error-message">{error}</p>}
+                {successMessage && <p className="success-message">{successMessage}</p>}
 
                 <div className="action-buttons">
                     <Button type="submit">✔ Ready to Get Snapped</Button>

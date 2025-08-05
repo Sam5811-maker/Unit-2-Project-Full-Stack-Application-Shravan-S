@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../Shared/Button";
-import "./AboutStylingSheet.css";
+import "../../stylesheets/AboutStylingSheet.css";
 
 const aboutImages = import.meta.glob("/src/assets/Images/About/*.{png,jpg,jpeg,svg}", {
   eager: true,
