@@ -1,0 +1,212 @@
+[
+  {
+    "name": "Emily Carter",
+    "services": [
+      {
+        "type_of_service_offered": "Wedding Photography",
+        "pricing": {
+          "Engagement Session": "$250",
+          "Full Wedding Package": "$2,500",
+          "Hourly Coverage": "$300/hr"
+        }
+      },
+      {
+        "type_of_service_offered": "Portrait Photography",
+        "pricing": {
+          "Individual Portrait": "$150",
+          "Family Session": "$350",
+          "Outdoor Portrait": "$200"
+        }
+      }
+    ]
+  },
+  {
+    "name": "James Robertson",
+    "services": [
+      {
+        "type_of_service_offered": "Corporate Events",
+        "pricing": {
+          "Conference Coverage": "$800",
+          "Company Headshots": "$500",
+          "Networking Events": "$600"
+        }
+      },
+      {
+        "type_of_service_offered": "Fashion Photography",
+        "pricing": {
+          "Studio Shoot": "$700",
+          "Runway Coverage": "$1,200",
+          "Editorial Spread": "$950"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Sophia Mitchell",
+    "services": [
+      {
+        "type_of_service_offered": "Newborn Photography",
+        "pricing": {
+          "Studio Session": "$300",
+          "Home Session": "$400",
+          "Baby Milestone Package": "$800"
+        }
+      },
+      {
+        "type_of_service_offered": "Maternity Photography",
+        "pricing": {
+          "Indoor Shoot": "$350",
+          "Outdoor Shoot": "$450",
+          "Full Pregnancy Timeline": "$1,000"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Liam Harrison",
+    "services": [
+      {
+        "type_of_service_offered": "Commercial Photography",
+        "pricing": {
+          "Product Shoots": "$600",
+          "Branding Photography": "$800",
+          "Advertising Campaigns": "$1,500"
+        }
+      },
+      {
+        "type_of_service_offered": "Real Estate Photography",
+        "pricing": {
+          "Interior Shots": "$400",
+          "Drone Photography": "$600",
+          "360 Virtual Tour": "$1,000"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Olivia Thompson",
+    "services": [
+      {
+        "type_of_service_offered": "Landscape Photography",
+        "pricing": {
+          "Prints & Licensing": "$50-$500",
+          "Custom Shoots": "$700",
+          "Editorial Features": "$1,000"
+        }
+      },
+      {
+        "type_of_service_offered": "Travel Photography",
+        "pricing": {
+          "Destination Coverage": "$900",
+          "Hotel Branding Shoot": "$1,500",
+          "Tourism Campaign": "$2,000"
+        }
+      }
+    ]
+  },
+  {
+    "name": "David Patterson",
+    "services": [
+      {
+        "type_of_service_offered": "Sports Photography",
+        "pricing": {
+          "Game Coverage": "$800",
+          "Athlete Portraits": "$600",
+          "Team Photos": "$750"
+        }
+      },
+      {
+        "type_of_service_offered": "Concert Photography",
+        "pricing": {
+          "Live Performance": "$1,000",
+          "Behind-the-Scenes": "$900",
+          "Festival Coverage": "$1,500"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Rachel Simmons",
+    "services": [
+      {
+        "type_of_service_offered": "Pet Photography",
+        "pricing": {
+          "Studio Pet Session": "$250",
+          "Outdoor Pet Portraits": "$350",
+          "Owner & Pet Combined": "$500"
+        }
+      },
+      {
+        "type_of_service_offered": "Fine Art Photography",
+        "pricing": {
+          "Gallery Prints": "$150-$800",
+          "Commissioned Artwork": "$1,500",
+          "Abstract Photography": "$1,000"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Daniel Kim",
+    "services": [
+      {
+        "type_of_service_offered": "Automotive Photography",
+        "pricing": {
+          "Car Dealership Branding": "$700",
+          "Luxury Vehicle Shoots": "$1,200",
+          "Action Racing Shots": "$900"
+        }
+      },
+      {
+        "type_of_service_offered": "Drone Photography",
+        "pricing": {
+          "Aerial City Views": "$600",
+          "Property Surveys": "$750",
+          "Cinematic Video Shoots": "$1,500"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Jessica Reed",
+    "services": [
+      {
+        "type_of_service_offered": "Food Photography",
+        "pricing": {
+          "Restaurant Menus": "$500",
+          "Ingredient Focus": "$400",
+          "Editorial Food Spread": "$750"
+        }
+      },
+      {
+        "type_of_service_offered": "Wedding Photography",
+        "pricing": {
+          "Pre-Wedding Shoot": "$300",
+          "Full Wedding Day Coverage": "$2,000",
+          "Luxury Destination Weddings": "$3,500"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Robert Hughes",
+    "services": [
+      {
+        "type_of_service_offered": "Documentary Photography",
+        "pricing": {
+          "Social Causes": "$1,000",
+          "Environmental Reports": "$1,500",
+          "Long-Term Projects": "$2,500"
+        }
+      },
+      {
+        "type_of_service_offered": "Portrait Photography",
+        "pricing": {
+          "Black & White Studio": "$300",
+          "Outdoor Editorial": "$450",
+          "Professional Headshots": "$500"
+        }
+      }
+    ]
+  }
+]
