@@ -1,0 +1,90 @@
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* background: linear-gradient(to right, #ece9e6, #ffffff); */
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navigation Bar */
+nav.pg-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  background-color: transparent;
+}
+
+nav.pg-list a {
+  text-decoration: none;
+  font-size: 2rem;
+  color: #2c3e50;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  text-align: center;
+}
+
+nav.pg-list a:hover {
+  color: #2980b9;
+}
+
+/* Photographer List Container */
+.photographer-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Card Styling */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 220px;
+  padding: 2rem 1.2rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Link Styling Inside Card */
+.card a {
+  text-decoration: none;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.2rem;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.card a:hover {
+  color: #3498db;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .photographer-list {
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .card {
+    width: 90%;
+    max-width: 360px;
+  }
+
+  nav.pg-list a {
+    font-size: 1.5rem;
+  }
+}

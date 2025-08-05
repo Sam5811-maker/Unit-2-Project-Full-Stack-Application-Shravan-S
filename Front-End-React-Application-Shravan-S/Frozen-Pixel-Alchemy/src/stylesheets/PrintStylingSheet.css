@@ -1,0 +1,28 @@
+.gallery-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Adjusts dynamically */
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Individual gallery items */
+.gallery-item {
+    overflow: hidden;
+}
+
+
+.gallery-prints {
+    width: 100%; /*  images to fit dynamically */
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+    cursor:grab;
+}
+
+/* Hover effect */
+.gallery-prints:hover {
+    transform: scale(1.05);
+}
