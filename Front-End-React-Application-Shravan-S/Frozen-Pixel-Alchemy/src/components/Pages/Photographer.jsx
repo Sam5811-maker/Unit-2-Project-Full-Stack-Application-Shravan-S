@@ -7,6 +7,50 @@ const Photographer = () => {
     const [error, setError] = useState('');
     const [retryCount, setRetryCount] = useState(0);
     const [isRetrying, setIsRetrying] = useState(false);
+    const [selectedPhotographer, setSelectedPhotographer] = useState(null);
+
+    // Helper function to validate and sanitize image URLs
+    const getValidImageUrl = (url, photographerId) => {
+        console.log(`Processing image URL for photographer ID ${photographerId}:`, {
+            originalUrl: url,
+            photographerId: photographerId
+        });
+        
+        // Primary fallback images (different from emergency fallbacks)
+        const primaryFallbacks = [
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face", // Professional man
+            "https://images.unsplash.com/photo-1494790108755-2616b612b5b5?w=150&h=150&fit=crop&crop=face", // Professional woman
+            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face", // Creative man
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face", // Creative woman
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face", // Artist man
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face", // Artist woman
+            "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop&crop=face", // Photographer man
+            "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face"  // Photographer woman
+        ];
+        
+        // If no URL provided, select based on photographer ID for consistency
+        if (!url) {
+            const imageIndex = photographerId ? photographerId % primaryFallbacks.length : 0;
+            const selectedImage = primaryFallbacks[imageIndex];
+            console.log(`No URL provided, using primary fallback image ${imageIndex}:`, selectedImage);
+            return selectedImage;
+        }
+        
+        // Check for known invalid URLs
+        if (url.includes('default-profile-picture.com') || 
+            url.includes('example.com') || 
+            url.includes('placeholder.com/default') ||
+            url.includes('via.placeholder.com')) {
+            const imageIndex = photographerId ? photographerId % primaryFallbacks.length : 0;
+            const selectedImage = primaryFallbacks[imageIndex];
+            console.log(`Invalid URL detected, using primary fallback image ${imageIndex}:`, selectedImage);
+            return selectedImage;
+        }
+        
+        // Return the URL if it seems valid
+        console.log(`Using original URL:`, url);
+        return url;
+    };
 
     // Fetch photographers from MySQL database
     const fetchPhotographers = useCallback(async (attempt = 1) => {
@@ -65,24 +109,38 @@ const Photographer = () => {
     const getFallbackPhotographers = () => [
         {
             photographerId: 1,
-            firstName: "John",
-            lastName: "Smith",
-            bio: "Professional landscape photographer with 10+ years experience.",
-            profilePictureUrl: "https://via.placeholder.com/150"
+            firstName: "Emily",
+            lastName: "Rodriguez",
+            bio: "Award-winning nature photographer specializing in wildlife and landscapes.",
+            profilePictureUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face"
         },
         {
             photographerId: 2,
-            firstName: "Sarah",
-            lastName: "Johnson",
-            bio: "Wedding and portrait specialist focused on natural lighting.",
-            profilePictureUrl: "https://via.placeholder.com/150"
+            firstName: "Eli",
+            lastName: "Carter",
+            bio: "Professional event and corporate photographer with expertise in lighting.",
+            profilePictureUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
         },
         {
             photographerId: 3,
-            firstName: "Mike",
+            firstName: "Nina",
+            lastName: "Gray",
+            bio: "Creative portrait photographer specializing in artistic compositions.",
+            profilePictureUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+        },
+        {
+            photographerId: 4,
+            firstName: "Michael",
             lastName: "Chen",
-            bio: "Street photography and urban exploration enthusiast.",
-            profilePictureUrl: "https://via.placeholder.com/150"
+            bio: "Wedding and portrait photographer with 10 years of experience.",
+            profilePictureUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+        },
+        {
+            photographerId: 5,
+            firstName: "Sarah",
+            lastName: "Williams",
+            bio: "Street and urban photography specialist capturing city life.",
+            profilePictureUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b5b5?w=150&h=150&fit=crop&crop=face"
         }
     ];
 
@@ -92,9 +150,9 @@ const Photographer = () => {
                 <nav className='pg-list'>
                     <h1>Photographers</h1>
                 </nav>
-                <div className="loading-spinner">
-                    <p>Loading photographers from database...</p>
-                    <div className="spinner"></div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '2rem' }}>
+                    <div className="loading-spinner" />
+                    <p style={{ marginTop: '1rem', fontWeight: 500 }}>Loading photographers from database...</p>
                 </div>
             </div>
         );
@@ -103,7 +161,15 @@ const Photographer = () => {
     return (
         <div>
             <nav className='pg-list'>
-                <h1>Our Photographers</h1>
+                <h1>Photographers Portfolio</h1>
+                {selectedPhotographer && (
+                    <button 
+                        onClick={() => setSelectedPhotographer(null)}
+                        className="back-button"
+                    >
+                        ← Back to List
+                    </button>
+                )}
             </nav>
 
             {error && (
@@ -122,38 +188,108 @@ const Photographer = () => {
                 </div>
             )}
 
-            <div className="photographer-list">
-                {photographers.length > 0 ? (
-                    photographers.map((photographer) => (
-                        <div key={photographer.photographerId} className="card">
-                            <div className="photographer-info">
-                                <img 
-                                    src={photographer.profilePictureUrl || "https://via.placeholder.com/150"} 
-                                    alt={`${photographer.firstName} ${photographer.lastName}`}
-                                    className="photographer-image"
-                                />
-                                <h3 className="photographer-name">
-                                    {photographer.firstName} {photographer.lastName}
-                                </h3>
-                                <p className="photographer-bio">
-                                    {photographer.bio || "Professional photographer"}
+            {selectedPhotographer ? (
+                // Detailed view for selected photographer
+                <div className="photographer-detail">
+                    <div className="detail-card">
+                        <div className="photographer-detail-info">
+                            <img 
+                                src={getValidImageUrl(selectedPhotographer.profilePictureUrl, selectedPhotographer.photographerId)} 
+                                alt={`${selectedPhotographer.firstName} ${selectedPhotographer.lastName}`}
+                                className="photographer-detail-image"
+                                onError={(e) => {
+                                    // Only log a warning if the originalUrl is not null and not a fallback
+                                    const originalUrl = selectedPhotographer.profilePictureUrl;
+                                    const fallbackUrls = [
+                                        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1494790108755-2616b612b5b5?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face"
+                                    ];
+                                    if (originalUrl && !fallbackUrls.includes(originalUrl)) {
+                                        console.warn(`Image failed for ${selectedPhotographer.firstName} ${selectedPhotographer.lastName}:`, {
+                                            originalUrl: originalUrl,
+                                            currentSrc: e.target.src,
+                                            photographerId: selectedPhotographer.photographerId
+                                        });
+                                    }
+                                    // Use emergency fallback for detail view
+                                    const emergencyFallbacks = [
+                                        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1521119989659-a83eee488004?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=300&h=300&fit=crop&crop=face",
+                                        "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=300&h=300&fit=crop&crop=face"
+                                    ];
+                                    const imageIndex = selectedPhotographer.photographerId % emergencyFallbacks.length;
+                                    const emergencyUrl = emergencyFallbacks[imageIndex];
+                                    if (!e.target.src.includes('photo-1560250097') && !e.target.src.includes('photo-1506794778202')) {
+                                        e.target.src = emergencyUrl;
+                                    } else {
+                                        e.target.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEyMCIgcj0iNDAiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0iTTYwIDI0MEM2MCAyMDAgMTAwIDE4MCAxNTAgMTgwUzI0MCAyMDAgMjQwIDI0MFYzMDBINjBWMjQwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K";
+                                    }
+                                }}
+                            />
+                            <div className="photographer-detail-text">
+                                <h2 className="photographer-detail-name">
+                                    {selectedPhotographer.firstName} {selectedPhotographer.lastName}
+                                </h2>
+                                <p className="photographer-detail-bio">
+                                    {selectedPhotographer.bio || "Professional photographer"}
                                 </p>
-                                <Link 
-                                    to={`/photographer/${photographer.photographerId}`}
-                                    className="photographer-link"
-                                >
-                                    View Portfolio
-                                </Link>
+                                {selectedPhotographer.specialties && (
+                                    <div className="photographer-specialties">
+                                        <h4>Specialties:</h4>
+                                        <p>{selectedPhotographer.specialties}</p>
+                                    </div>
+                                )}
+                                {selectedPhotographer.email && (
+                                    <div className="photographer-contact">
+                                        <h4>Contact:</h4>
+                                        <p>{selectedPhotographer.email}</p>
+                                    </div>
+                                )}
+                                
                             </div>
                         </div>
-                    ))
-                ) : (
-                    <div className="no-photographers">
-                        <p>No photographers found in the database.</p>
-                        <button onClick={handleRetry}>Retry</button>
                     </div>
-                )}
-            </div>
+                </div>
+            ) : (
+                // List view - names and bios only
+                <div className="photographer-list">
+                    {photographers.length > 0 ? (
+                        photographers.map((photographer) => (
+                            <div 
+                                key={photographer.photographerId} 
+                                className="photographer-list-item"
+                                onClick={() => setSelectedPhotographer(photographer)}
+                            >
+                                <h3 className="photographer-list-name">
+                                    {photographer.firstName} {photographer.lastName}
+                                </h3>
+                                <p className="photographer-list-bio">
+                                    {photographer.bio || "Professional photographer"}
+                                </p>
+                                <div className="photographer-list-action">
+                                    <span>Click to view details →</span>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="no-photographers">
+                            <p>No photographers found in the database.</p>
+                            <button onClick={handleRetry}>Retry</button>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

@@ -1,10 +1,96 @@
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  /* background: linear-gradient(to right, #ece9e6, #ffffff); */
-  color: #333;
-  margin: 0;
-  padding: 0;
+/* Center the photographer detail text */
+.photographer-detail-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
+.photographer-detail-image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto; 
+  width: 30%;
+  height: auto;
+}
+
+.photographer-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  perspective: 1200px; /* Enables 3D feel for child elements */
+}
+
+.photographer-list-item {
+  background: linear-gradient(140deg, #ffffff88, #f0f0f022);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.photographer-list-item:hover {
+  transform: rotateY(4deg) translateY(-12px);
+  box-shadow:
+    0 16px 40px rgba(31,38,135,0.25),
+    0 2px 12px rgba(60,72,100,0.1);
+}
+
+/* 3D Avatar Image */
+.photographer-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.photographer-list-item:hover .photographer-image {
+  transform: translateZ(20px) scale(1.08);
+}
+
+/* Glow effect beneath card */
+.photographer-list-item::before {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: radial-gradient(circle, rgba(102,126,234,0.2), transparent 70%);
+  filter: blur(8px);
+  z-index: 1;
+}
+
+/* Optional glow effect behind cards */
+.photographer-list-item::after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(102,126,234,0.2) 0%, transparent 80%);
+  filter: blur(6px);
+  z-index: -1;
+}
+
 
 /* Navigation Bar */
 nav.pg-list {
@@ -21,92 +107,23 @@ nav.pg-list a {
   color: #2c3e50;
   font-weight: 600;
   transition: color 0.3s ease;
-  text-align: center;
-}
 
-nav.pg-list a:hover {
-  color: #2980b9;
-}
-
-/* Photographer List Container */
-.photographer-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: auto;
-}
-
-/* Card Styling */
-.card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 220px;
-  padding: 2rem 1.2rem;
-  text-align: center;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
-}
-
-.card:hover::before {
-  left: 100%;
-}
-
-.card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Link Styling Inside Card */
-.card a {
-  text-decoration: none;
-  color: #2c3e50;
-  font-weight: 600;
-  font-size: 1.2rem;
-  display: block;
-  transition: all 0.3s ease;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.card a:hover {
-  color: #667eea;
-  text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .photographer-list {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.2rem;
     padding: 1rem;
   }
-
-  .card {
-    width: 90%;
-    max-width: 360px;
+  .photographer-list-item {
+    min-width: 0;
+    max-width: 100vw;
+    padding: 1.2rem 0.8rem;
   }
-
   nav.pg-list a {
     font-size: 1.5rem;
   }
-
   nav.pg-list {
     margin: 1rem;
     padding: 1.5rem 1rem;
@@ -114,72 +131,91 @@ nav.pg-list a:hover {
 }
 
 /* Photographer Card Image */
-.photographer-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: 0 auto 1.5rem;
-  border: 4px solid rgba(102, 126, 234, 0.2);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+
 
 .card:hover .photographer-image {
   border-color: rgba(102, 126, 234, 0.6);
   transform: scale(1.1);
 }
 
-/* Photographer Info */
-.photographer-name {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+.photographer-list-item {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 24px 0 rgba(31, 38, 135, 0.18),
+    0 1.5px 6px 0 rgba(60, 72, 100, 0.10),
+    0 8px 32px 0 rgba(60, 72, 100, 0.18),
+    0 0.5px 1.5px 0 rgba(0,0,0,0.08);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  padding: 2.5rem 2rem;
+  margin: 1.5rem 1rem;
+  min-width: 320px;
+  max-width: 480px;
+  width: 100%;
+  transition: box-shadow 0.25s, transform 0.25s, border 0.25s, background 0.25s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.photographer-bio {
-  font-size: 0.95rem;
-  color: #666;
-  line-height: 1.5;
-  margin-top: 1rem;
-  padding: 0 0.5rem;
+.photographer-list-item:hover {
+  box-shadow: 0 16px 40px 0 rgba(31, 38, 135, 0.22);
+  border: 1.5px solid rgba(102, 126, 234, 0.35);
+  transform: translateY(-4px) scale(1.025);
+  background: rgba(255, 255, 255, 0.28);
 }
 
-/* Loading States */
-.loading-spinner {
-  border: 3px solid rgba(102, 126, 234, 0.1);
-  border-top: 3px solid #667eea;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 2rem auto;
+.photographer-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  align-items: start;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 60vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Status Banners */
-.warning-banner, .success-banner {
-  padding: 1rem 2rem;
-  margin: 1rem auto;
-  max-width: 600px;
-  border-radius: 10px;
-  text-align: center;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.warning-banner {
-  background: linear-gradient(135deg, #f39c12, #e67e22);
-  color: white;
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* background: linear-gradient(to right, #ece9e6, #ffffff); */
+  color: #333;
+  margin: 0;
+  padding: 0;
 }
 
 .success-banner {
   background: linear-gradient(135deg, #27ae60, #2ecc71);
   color: white;
+}
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 1rem auto;
+  max-width: 600px;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.back-button:hover {
+  background-color: #c0392b;
+  transform: scale(1.05);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }

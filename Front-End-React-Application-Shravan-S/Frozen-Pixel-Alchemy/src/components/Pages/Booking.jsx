@@ -18,14 +18,27 @@ const Booking = () => {
 
     useBookingSocket(setConfirmedBookings);
 
-    // to fetch photographers list and their timeslot
+        // to fetch photographers list and their timeslot from database
     useEffect(() => {
-        fetch('/Photographer-List.json')
+        fetch('http://localhost:8080/api/photographers')
             .then(response => response.json())
-            .then(json => setPhotographerList(json))
-            .catch(error => console.error("Error loading JSON:", error));
-
-        setBookingSlot(["10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM"]);
+            .then(data => {
+                // Transform database data to match the expected format
+                const transformedData = data.map(photographer => ({
+                    photographerId: photographer.photographerId,
+                    name: `${photographer.firstName} ${photographer.lastName}`,
+                    services: photographer.specialties ? photographer.specialties.split(',').map(s => s.trim()) : ['Portrait', 'Wedding', 'Event']
+                }));
+                setPhotographerList(transformedData);
+            })
+            .catch(error => {
+                console.error('Error fetching photographers:', error);
+                // Fallback to static data if API fails
+                fetch('/Photographer-List.json')
+                    .then(response => response.json())
+                    .then(json => setPhotographerList(json))
+                    .catch(jsonError => console.error('Error loading fallback photographer list:', jsonError));
+            });
     }, []);
 
 
