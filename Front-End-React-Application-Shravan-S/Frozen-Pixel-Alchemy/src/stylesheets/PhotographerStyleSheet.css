@@ -1,4 +1,3 @@
-
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   /* background: linear-gradient(to right, #ece9e6, #ffffff); */
@@ -50,6 +49,24 @@ nav.pg-list a:hover {
   padding: 2rem 1.2rem;
   text-align: center;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.card:hover::before {
+  left: 100%;
 }
 
 .card:hover {
@@ -64,11 +81,13 @@ nav.pg-list a:hover {
   font-weight: 600;
   font-size: 1.2rem;
   display: block;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .card a:hover {
-  color: #3498db;
+  color: #667eea;
+  text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Responsive Design */
@@ -87,4 +106,80 @@ nav.pg-list a:hover {
   nav.pg-list a {
     font-size: 1.5rem;
   }
+
+  nav.pg-list {
+    margin: 1rem;
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Photographer Card Image */
+.photographer-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.5rem;
+  border: 4px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover .photographer-image {
+  border-color: rgba(102, 126, 234, 0.6);
+  transform: scale(1.1);
+}
+
+/* Photographer Info */
+.photographer-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.photographer-bio {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+  margin-top: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* Loading States */
+.loading-spinner {
+  border: 3px solid rgba(102, 126, 234, 0.1);
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Status Banners */
+.warning-banner, .success-banner {
+  padding: 1rem 2rem;
+  margin: 1rem auto;
+  max-width: 600px;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.warning-banner {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.success-banner {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
 }

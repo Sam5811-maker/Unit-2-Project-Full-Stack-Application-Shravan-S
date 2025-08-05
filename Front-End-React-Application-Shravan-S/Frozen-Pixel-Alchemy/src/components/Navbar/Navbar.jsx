@@ -5,7 +5,7 @@ import './NavBarStylesheet.css';
 import logo from '../../assets/Images/logo/logo.png';
 
 
-
+    
 const Navbar = () => {
     // useState to manage hamburger menu toggle
     const [hamburgerOpen, setHamburgerOpen] = useState(false);

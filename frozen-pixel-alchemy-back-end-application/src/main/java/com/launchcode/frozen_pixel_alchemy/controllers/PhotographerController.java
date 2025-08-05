@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/photographers")
 public class PhotographerController {
@@ -59,9 +58,23 @@ public class PhotographerController {
                                                    @RequestParam(value = "bio", required = false) String bio,
                                                    @RequestParam(value = "profilePictureUrl", required = false) String profilePictureUrl) {
         Photographer newPhotographer = new Photographer(firstName, lastName, null);
-        newPhotographer.setBio("Default Bio"); // Set a default bio if not provided
-        newPhotographer.setProfilePictureUrl("http://default-profile-picture.com/default.jpg"); // Set a default profile picture URL if not provided
-        newPhotographer.setUserId(userId); // Set a user ID
+        
+        // Use provided bio or set default
+        if (bio != null && !bio.trim().isEmpty()) {
+            newPhotographer.setBio(bio);
+        } else {
+            newPhotographer.setBio("Professional photographer");
+        }
+        
+        // Use provided profile picture URL or set default
+        if (profilePictureUrl != null && !profilePictureUrl.trim().isEmpty()) {
+            newPhotographer.setProfilePictureUrl(profilePictureUrl);
+        } else {
+            newPhotographer.setProfilePictureUrl("https://images.unsplash.com/photo-1511485977113-f34c92461ad9?w=150&h=150&fit=crop&crop=face");
+        }
+        
+        newPhotographer.setUserId(userId);
+        
         // Save the new photographer to the repository
         photographerRepository.save(newPhotographer);
         return new ResponseEntity<>(newPhotographer, HttpStatus.CREATED);
@@ -75,13 +88,31 @@ public class PhotographerController {
     // Example: http://localhost:8080/api/photographers/update/1?firstName=Jane&lastName=Doe&bio=Updated+Bio&profilePictureUrl
     @PutMapping("/update/{photographerId}")
     public ResponseEntity<?> updatePhotographer(@PathVariable int photographerId,
-                                                @RequestParam(value = "firstName") String firstName,
-                                                @RequestParam(value = "lastName") String lastName) {
+                                                @RequestParam(value = "firstName", required = false) String firstName,
+                                                @RequestParam(value = "lastName", required = false) String lastName,
+                                                @RequestParam(value = "bio", required = false) String bio,
+                                                @RequestParam(value = "profilePictureUrl", required = false) String profilePictureUrl,
+                                                @RequestParam(value = "userId", required = false) String userId) {
         Photographer photographer = photographerRepository.findById(photographerId)
                 .orElse(null);
         if (photographer != null) {
-            photographer.setFirstName(firstName);
-            photographer.setLastName(lastName);
+            // Update fields only if provided
+            if (firstName != null && !firstName.trim().isEmpty()) {
+                photographer.setFirstName(firstName);
+            }
+            if (lastName != null && !lastName.trim().isEmpty()) {
+                photographer.setLastName(lastName);
+            }
+            if (bio != null && !bio.trim().isEmpty()) {
+                photographer.setBio(bio);
+            }
+            if (profilePictureUrl != null && !profilePictureUrl.trim().isEmpty()) {
+                photographer.setProfilePictureUrl(profilePictureUrl);
+            }
+            if (userId != null) {
+                photographer.setUserId(userId);
+            }
+            
             photographerRepository.save(photographer);
             return new ResponseEntity<>(photographer, HttpStatus.OK);
         } else {

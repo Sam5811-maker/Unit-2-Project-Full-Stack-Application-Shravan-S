@@ -53,12 +53,17 @@ const Booking = () => {
         return;
         }
 
+    // Find the selected photographer to get their ID
+    const selectedPhotographer = photographerList.find(pg => pg.name === photographer);
+    const photographerId = selectedPhotographer ? selectedPhotographer.photographerId : null;
+
     const newBooking = {
       eventType: typeOfService,
       bookingDate: selectedDate,
       bookingTime: convertTo24Hour(slotTime),
       notes: `${appointment} - Photographer: ${photographer} - Email: ${email}`,
-      status: "pending"
+      status: "pending",
+      photographerId: photographerId // Include photographer ID from database
     };
 
     fetch("http://localhost:8080/api/bookings/add", {
@@ -105,46 +110,58 @@ const Booking = () => {
         <div className="booking-container">
             <h2>Book Your Photography Session</h2>
             <form onSubmit={handleSubmit} className="booking-form">
-                <label>Appointment Title:</label>
-                <input 
-                    type="text" 
-                    value={appointment} 
-                    onChange={(e) => setAppointment(e.target.value)} 
-                    placeholder="Enter title"
-                    required
-                />
+                <div className="form-field">
+                    <label>Appointment Title:</label>
+                    <input 
+                        type="text" 
+                        value={appointment} 
+                        onChange={(e) => setAppointment(e.target.value)} 
+                        placeholder="Enter title"
+                        required
+                    />
+                </div>
 
-                <label>Select Photographer:</label>
-                <select value={photographer} onChange={(e) => setPhotographer(e.target.value)}>
-                    <option value="">Select a Photographer</option>
-                    {photographerList.map((pg, index) => (
-                        <option key={index} value={pg.name}>{pg.name}</option>
-                    ))}
-                </select>
+                <div className="form-field">
+                    <label>Select Photographer:</label>
+                    <select value={photographer} onChange={(e) => setPhotographer(e.target.value)}>
+                        <option value="">Select a Photographer</option>
+                        {photographerList.map((pg, index) => (
+                            <option key={index} value={pg.name}>{pg.name}</option>
+                        ))}
+                    </select>
+                </div>
 
-                <label>Photography Service Type:</label>
-                <select value={typeOfService} onChange={(e) => setTypeOfService(e.target.value)}>
-                    <option value="">Select Service Type</option>
-                    {filteredServices.map((service, index) => (
-                        <option key={index} value={service.type_of_service_offered}>
-                            {service.type_of_service_offered}
-                        </option>
-                    ))}
-                </select>
+                <div className="form-field">
+                    <label>Photography Service Type:</label>
+                    <select value={typeOfService} onChange={(e) => setTypeOfService(e.target.value)}>
+                        <option value="">Select Service Type</option>
+                        {filteredServices.map((service, index) => (
+                            <option key={index} value={service.type_of_service_offered}>
+                                {service.type_of_service_offered}
+                            </option>
+                        ))}
+                    </select>
+                </div>
 
-                <label>Choose Date:</label>
-                <input type="date" min={new Date().toISOString().split('T')[0]} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+                <div className="form-field">
+                    <label>Choose Date:</label>
+                    <input type="date" min={new Date().toISOString().split('T')[0]} value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
+                </div>
 
-                <label>Choose Time:</label>
-                <select value={slotTime} onChange={(e) => setSlotTime(e.target.value)}>
-                    <option value="">Select a Time Slot</option>
-                    {bookingSlot.map((time, index) => (
-                        <option key={index} value={time}>{time}</option>
-                    ))}
-                </select>
+                <div className="form-field">
+                    <label>Choose Time:</label>
+                    <select value={slotTime} onChange={(e) => setSlotTime(e.target.value)}>
+                        <option value="">Select a Time Slot</option>
+                        {bookingSlot.map((time, index) => (
+                            <option key={index} value={time}>{time}</option>
+                        ))}
+                    </select>
+                </div>
 
-                <label>Email:</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                <div className="form-field">
+                    <label>Email:</label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
+                </div>
 
                 {error && <p className="error-message">{error}</p>}
                 {successMessage && <p className="success-message">{successMessage}</p>}
@@ -158,33 +175,35 @@ const Booking = () => {
             {confirmedBookings.length > 0 && (
                 <div className="confirmation-list">
                     <h3>Confirmed Bookings</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Appointment Title</th>
-                                <th>Photographer</th>
-                                <th>Service</th>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {confirmedBookings.map((booking, index) => (
-                                <tr key={index}>
-                                    <td><strong>{booking.appointment}</strong></td>
-                                    <td>{booking.photographer}</td>
-                                    <td>{booking.typeOfService}</td>
-                                    <td>{booking.selectedDate}</td>
-                                    <td>{booking.slotTime}</td>
-                                    <td>
-                                        <Button onClick={() => handleEditBooking(booking.id)}>✏ Edit</Button>
-                                        <Button onClick={() => handleCancelBooking(booking.id)}>❌ Cancel</Button>
-                                    </td>
+                    <div className="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Appointment Title</th>
+                                    <th>Photographer</th>
+                                    <th>Service</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>                  
+                            </thead>
+                            <tbody>
+                                {confirmedBookings.map((booking, index) => (
+                                    <tr key={index}>
+                                        <td><strong>{booking.appointment}</strong></td>
+                                        <td>{booking.photographer}</td>
+                                        <td>{booking.typeOfService}</td>
+                                        <td>{booking.selectedDate}</td>
+                                        <td>{booking.slotTime}</td>
+                                        <td>
+                                            <Button onClick={() => handleEditBooking(booking.id)}>✏ Edit</Button>
+                                            <Button onClick={() => handleCancelBooking(booking.id)}>❌ Cancel</Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>                  
                 </div>
             )}
         </div>
