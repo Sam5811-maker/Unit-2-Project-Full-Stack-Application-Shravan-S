@@ -1,0 +1,107 @@
+/* General Navbar Styling */
+body {
+    font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header and Navbar */
+header {
+    background-color: #3b8ea5;
+    padding: 10px 20px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #3b8ea5;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.nav-menu li a, .home {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+.nav-menu li a:hover {
+    background-color: #2f6d89;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+.home:hover {
+    background-color: #2f6d89;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+/* Active Link */
+.nav-menu a.active {
+    background-color: #2f6d89;
+    color: #e4e5dc;
+    font-weight: bold;
+}
+
+/* Hamburger Menu */
+.hamburger {
+    display: none; /* Hidden on larger screens */
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+    .hamburger {
+        display: block; /* Show hamburger on mobile */
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #3b8ea5;
+        padding: 15px 0;
+        text-align: center;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .nav-menu.open {
+        display: flex;
+    }
+
+    .nav-menu li {
+        margin: 10px 0;
+    }
+}
+
+/* Logo Styling */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.App-logo {
+    width: 100px; /* Larger size */
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}

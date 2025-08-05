@@ -5,16 +5,16 @@ import jakarta.persistence.*;
 @Entity
 public class Photographer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "photographer_id")
+    private int photographerId;
 
-    @Column(nullable = false)
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "user_id", nullable = false, unique = true)
+    @Column(name = "user_id", nullable = true, unique = true)
     private String userId;
 
     @Column(name = "bio")
@@ -36,8 +36,8 @@ public class Photographer {
         this.bio = bio;
     }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getPhotographerId() { return photographerId; }
+    public void setId(int photographerId) { this.photographerId = photographerId; }
 
     public String getFirstName() { return firstName; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
