@@ -1,9 +1,13 @@
 package com.launchcode.frozen_pixel_alchemy.controllers;
 
 import com.launchcode.frozen_pixel_alchemy.models.Booking;
+import com.launchcode.frozen_pixel_alchemy.models.Photographer;
+import com.launchcode.frozen_pixel_alchemy.models.dto.BookingDTO;
 import com.launchcode.frozen_pixel_alchemy.respositories.BookingRepository;
+import com.launchcode.frozen_pixel_alchemy.respositories.PhotographerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -13,6 +17,10 @@ public class BookingController {
 
     @Autowired
     BookingRepository bookingRepository;
+    @Autowired
+    PhotographerRepository photographerRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     // GET the full list of bookings
     // Endpoint: http://localhost:8080/api/bookings
@@ -39,10 +47,26 @@ public class BookingController {
     // Post a new booking
     // Endpoint: http://localhost:8080/api/bookings/add
     @PostMapping("/add")
-    public ResponseEntity<?> addBooking(@RequestBody Booking booking) {
-        // Save the new booking to the repository
+    public ResponseEntity<?> addBooking(@RequestBody BookingDTO bookingDTO) {
+        // Map DTO to Booking entity
+        Booking booking = new Booking();
+        Photographer photographer = photographerRepository.findById(bookingDTO.photographerId).orElse(null);
+        if (photographer == null) {
+            return ResponseEntity.badRequest().body("Invalid photographerId");
+        }
+        booking.setPhotographer(photographer);
+        booking.setEventType(bookingDTO.eventType);
+        booking.setBookingDate(bookingDTO.bookingDate);
+        booking.setBookingTime(bookingDTO.bookingTime);
+        booking.setNotes(bookingDTO.notes);
+        booking.setTotalAmount(bookingDTO.totalAmount);
+        booking.setStatus(
+            bookingDTO.status != null
+                ? Booking.Status.valueOf(bookingDTO.status)
+                : Booking.Status.pending
+        );
         Booking savedBooking = bookingRepository.save(booking);
-        // Return the saved booking with a 201 Created status
+        messagingTemplate.convertAndSend("/topic/bookings", savedBooking);
         return ResponseEntity.status(201).body(savedBooking);
     }
 

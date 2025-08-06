@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collections;
 import java.util.List;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174","http://localhost:3000"}, maxAge = 3600)
 @RestController
 @RequestMapping("/api/photographers")
 public class PhotographerController {
@@ -53,18 +53,13 @@ public class PhotographerController {
     // Returns: HTML page with confirmation of photographer addition
     // Example: http://localhost:8080/api/photographers/add?firstName=John&lastName=Doe&bio=Photographer+Bio&profilePictureUrl=http://example
     @PostMapping("/add")
-    public ResponseEntity<?> createNewPhotographer(@RequestParam(value = "firstName") String firstName,
-                                                   @RequestParam(value = "lastName") String lastName,
-                                                   @RequestParam(value = "userId", required = false) String userId,
-                                                   @RequestParam(value = "bio", required = false) String bio,
-                                                   @RequestParam(value = "profilePictureUrl", required = false) String profilePictureUrl) {
-        Photographer newPhotographer = new Photographer(firstName, lastName, null);
-        newPhotographer.setBio("Default Bio"); // Set a default bio if not provided
-        newPhotographer.setProfilePictureUrl("http://default-profile-picture.com/default.jpg"); // Set a default profile picture URL if not provided
-        newPhotographer.setUserId(userId); // Set a user ID
-        // Save the new photographer to the repository
-        photographerRepository.save(newPhotographer);
-        return new ResponseEntity<>(newPhotographer, HttpStatus.CREATED);
+    public ResponseEntity<?> createNewPhotographer(@RequestBody List<Photographer> photographers) {
+        for (Photographer photographer : photographers) {
+            if (photographer.getBio() == null) photographer.setBio("Default Bio");
+            if (photographer.getProfilePictureUrl() == null) photographer.setProfilePictureUrl("http://default-profile-picture.com/default.jpg");
+            photographerRepository.save(photographer);
+        }
+        return new ResponseEntity<>(photographers, HttpStatus.CREATED);
     }
 
     // Endpoint to update an existing photographer

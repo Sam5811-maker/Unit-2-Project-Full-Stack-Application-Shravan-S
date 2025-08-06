@@ -12,6 +12,7 @@ public class BookingDTO {
     public LocalTime bookingTime;
     public String notes;
     public BigDecimal totalAmount;
+public String status;
 
     public Integer getUserId() {
         return userId;
@@ -67,5 +68,13 @@ public class BookingDTO {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

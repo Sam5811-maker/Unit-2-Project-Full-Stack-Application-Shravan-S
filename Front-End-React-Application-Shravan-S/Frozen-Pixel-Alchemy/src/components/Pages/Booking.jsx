@@ -18,8 +18,15 @@ const Booking = () => {
     const [photographerList, setPhotographerList] = useState([]);
     const [confirmedBookings, setConfirmedBookings] = useState([]); 
 
-
     useBookingSocket(setConfirmedBookings);
+
+    // Auto-hide booking confirmation notification after 3 seconds
+    useEffect(() => {
+        if (successMessage) {
+            const timer = setTimeout(() => setSuccessMessage(''), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [successMessage]);
 
     // Fetch photographers list and their timeslot
     useEffect(() => {
@@ -44,20 +51,42 @@ const Booking = () => {
     const filteredServices = photographerList.find(pg => pg.name === photographer)?.services || [];
 
 
+    // Convert '12:00 PM' to 'HH:mm:ss' format
+    function convertTo24Hour(timeStr) {
+        if (!timeStr) return '';
+        const [time, modifier] = timeStr.split(' ');
+        let [hours, minutes] = time.split(':');
+        hours = parseInt(hours, 10);
+        if (modifier === 'PM' && hours !== 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
+        return `${hours.toString().padStart(2, '0')}:${minutes}:00`;
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!photographer || !typeOfService || !selectedDate || !slotTime) {
             setError("All fields are required.");
             return;
         }
+        // Find selected photographer object
+        const selectedPhotographer = photographerList.find(pg => pg.name === photographer);
+        const photographerId = selectedPhotographer ? selectedPhotographer.photographerId : null;
+        if (!photographerId) {
+            setError("Selected photographer is invalid or missing an ID.");
+            return;
+        }
+        // Format slotTime to HH:mm:ss for backend
+        const formattedTime = convertTo24Hour(slotTime);
         const newBooking = {
-            appointment,
-            photographer,
-            typeOfService,
-            email,
-            selectedDate,
-            slotTime
+            photographerId,
+            eventType: typeOfService,
+            bookingDate: selectedDate,
+            bookingTime: formattedTime,
+            notes: appointment,
+            totalAmount: 0,
+            status: 'pending'
         };
+        console.log("Submitting booking:", newBooking);
         fetch("http://localhost:8080/api/bookings/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -86,7 +115,10 @@ const Booking = () => {
             })
                 .then(res => {
                     if (res.ok) {
-                        setConfirmedBookings(confirmedBookings.filter((booking) => booking.bookingId !== bookingId));
+                        // Refresh bookings after delete
+                        fetch('http://localhost:8080/api/bookings')
+                            .then(res => res.json())
+                            .then(data => setConfirmedBookings(data));
                     } else {
                         setError("Failed to cancel booking.");
                     }
@@ -99,17 +131,20 @@ const Booking = () => {
     const handleEditBooking = (bookingId) => {
         const bookingToEdit = confirmedBookings.find((b) => b.bookingId === bookingId);
         if (!bookingToEdit) return;
-        const newTitle = prompt("Edit Appointment Title:", bookingToEdit.appointment);
-        if (newTitle && newTitle !== bookingToEdit.appointment) {
-            const updatedBooking = { ...bookingToEdit, appointment: newTitle };
+        const newTitle = prompt("Edit Appointment Title:", bookingToEdit.notes);
+        if (newTitle && newTitle !== bookingToEdit.notes) {
+            const updatedBooking = { ...bookingToEdit, notes: newTitle };
             fetch(`http://localhost:8080/api/bookings/update/${bookingId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedBooking)
             })
                 .then(res => res.json())
-                .then((data) => {
-                    setConfirmedBookings(confirmedBookings.map((b) => b.bookingId === bookingId ? data : b));
+                .then(() => {
+                    // Refresh bookings after edit
+                    fetch('http://localhost:8080/api/bookings')
+                        .then(res => res.json())
+                        .then(data => setConfirmedBookings(data));
                 })
                 .catch(() => setError("Failed to update booking."));
         }
@@ -117,6 +152,22 @@ const Booking = () => {
 
     return (
         <div className="booking-container">
+            {/* Booking Confirmation Notification */}
+            {successMessage && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    right: '20px',
+                    background: '#4BB543',
+                    color: 'white',
+                    padding: '1rem 2rem',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    zIndex: 1000
+                }}>
+                    {successMessage}
+                </div>
+            )}
             <h2>Book Your Photography Session</h2>
             <form onSubmit={handleSubmit} className="booking-form">
                 <label>Appointment Title:</label>
@@ -185,8 +236,12 @@ const Booking = () => {
                         <tbody>
                             {confirmedBookings.map((booking, index) => (
                                 <tr key={index}>
-                                    <td><strong>{booking.appointment}</strong></td>
-                                    <td>{booking.photographer?.name || booking.photographer}</td>
+                                    <td><strong>{booking.notes}</strong></td>
+                                    <td>
+                                        {booking.photographer
+                                            ? `${booking.photographer.firstName || ""} ${booking.photographer.lastName || ""}`.trim()
+                                            : ""}
+                                    </td>
                                     <td>{booking.typeOfService || booking.eventType}</td>
                                     <td>{booking.selectedDate || booking.bookingDate}</td>
                                     <td>{booking.slotTime || booking.bookingTime}</td>

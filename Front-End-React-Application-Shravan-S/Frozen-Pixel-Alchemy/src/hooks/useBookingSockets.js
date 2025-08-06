@@ -1,10 +1,11 @@
-import { Client } from '@stomp/stompjs';
 import { useEffect } from 'react';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client'; // Add this import
 
 const useBookingSocket = (setConfirmedBookings) => {
   useEffect(() => {
     const stompClient = new Client({
-      brokerURL: 'ws://localhost:8080/ws-booking', // native WebSocket
+      webSocketFactory: () => new SockJS('http://localhost:8080/ws-booking'), // Use SockJS
       reconnectDelay: 5000,
       onConnect: () => {
         stompClient.subscribe('/topic/bookings', message => {
